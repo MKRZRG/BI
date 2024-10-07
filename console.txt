@@ -1,4 +1,72 @@
+Aufgabe 1
 CREATE USER bi WITH PASSWORD '123456';
+
 GRANT ALL PRIVILEGES ON DATABASE bi TO bi;
 GRANT ALL ON SCHEMA public TO bi;
 \z
+
+
+Aufgabe 3
+a)SELECT brand, COUNT(*) AS count
+FROM shoes
+GROUP BY brand
+ORDER BY count DESC
+LIMIT 5;
+
+b)SELECT
+      MAX(weight) AS max_weight,
+      MIN(weight) AS min_weight
+  FROM shoes;
+
+c)SELECT DISTINCT prices_condition
+ FROM shoes;
+
+d)SELECT prices_condition, COUNT(*) AS count
+  FROM shoes
+  GROUP BY prices_condition;
+
+e)SELECT DISTINCT prices_currency
+  FROM shoes;
+
+f)SELECT prices_currency, COUNT(*) AS count
+  FROM shoes
+  GROUP BY prices_currency
+  ORDER BY count DESC;
+
+g)SELECT brand, AVG(price) AS average_price
+  FROM shoes
+  WHERE prices_currency = 'USD'
+  GROUP BY brand
+  ORDER BY average_price DESC
+  LIMIT 1;
+
+h)SELECT platform, COUNT(*) AS count
+  FROM shoes
+  GROUP BY platform
+  ORDER BY count DESC
+  LIMIT 5;
+
+
+
+  CREATE TABLE schuhverkauf (
+                         id varchar(255),
+                         brand VARCHAR(255),                -- Marque de la chaussure
+                         prices_condition VARCHAR(50),             -- État de la chaussure
+                         prices_amountmax DECIMAL(10,2),
+                         prices_amountmin DECIMAL(10,2),
+                         prices_currency VARCHAR(50),               -- Devise (par exemple, USD, EUR)
+                         prices_merchant VARCHAR(255),              -- Plateforme de vente (par exemple, Walmart)
+                         weight VARCHAR(50)               -- Poids de la chaussure
+  );
+  INSERT INTO schuhverkauf (id, brand, prices_condition, prices_amountmax, prices_amountmin, prices_currency, prices_merchant, weight)
+  SELECT
+      id,                         -- L'identifiant unique depuis la table shoes
+      brand,                      -- Marque de la chaussure
+      prices_condition,                  -- État de la chaussure (lié à prices_condition dans schuhverkauf)
+      prices_amountmax,   -- On considère 'price' comme prix max (si c'est pertinent)
+      prices_amountmin,   -- On insère le même prix comme prix min (si les prix min/max ne sont pas disponibles séparément)
+      prices_currency,                   -- Devise (USD, EUR, etc.)
+      prices_merchant AS prices_merchant, -- Plateforme de vente
+      weight                      -- Poids de la chaussure
+  FROM shoes;
+
