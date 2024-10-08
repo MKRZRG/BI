@@ -70,3 +70,32 @@ h)SELECT platform, COUNT(*) AS count
       weight                      -- Poids de la chaussure
   FROM shoes;
 
+
+Aufgabe 6
+b)
+fact_shoes (id, prices_amountmin, prices_amountmax, weight, brand_id, manufacturer_id, price_id, color_id, category_id, merchant_id, date_id, image_id)
+
+dim_brand (brand_id, brand_name)
+
+dim_manufacturer (manufacturer_id, manufacturer_name, manufacturernumber)
+
+dim_price (price_id, prices_currency, prices_condition)
+
+dim_color (color_id, colors)
+
+dim_category (category_id, categories)
+
+dim_merchant (merchant_id, merchants_name)
+
+dim_date (date_id, dateadded, dateupdated)
+
+dim_image (image_id, imageurls)
+
+
+
+
+
+
+
+
+
