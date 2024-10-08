@@ -91,6 +91,88 @@ dim_date (date_id, dateadded, dateupdated)
 
 dim_image (image_id, imageurls)
 
+Aufgabe 8
+-- Création de la table des faits
+CREATE TABLE fact_shoes (
+    id SERIAL PRIMARY KEY,  -- Clé primaire
+    weight_id DECIMAL(10,2),   -- Poids
+    brand_id INT,           -- Clé étrangère vers dim_brand
+    manufacturer_id INT,    -- Clé étrangère vers dim_manufacturer
+    price_id INT,           -- Clé étrangère vers dim_price
+    color_id INT,           -- Clé étrangère vers dim_color
+    category_id INT,        -- Clé étrangère vers dim_category
+    merchant_id INT,        -- Clé étrangère vers dim_merchant
+    date_id INT,            -- Clé étrangère vers dim_date
+    image_id INT,           -- Clé étrangère vers dim_image
+    FOREIGN KEY (brand_id) REFERENCES dim_brand(brand_id),
+    FOREIGN KEY (manufacturer_id) REFERENCES dim_manufacturer(manufacturer_id),
+    FOREIGN KEY (price_id) REFERENCES dim_price(price_id),
+    FOREIGN KEY (color_id) REFERENCES dim_color(color_id),
+    FOREIGN KEY (category_id) REFERENCES dim_category(category_id),
+    FOREIGN KEY (merchant_id) REFERENCES dim_merchant(merchant_id),
+    FOREIGN KEY (date_id) REFERENCES dim_date(date_id),
+    FOREIGN KEY (image_id) REFERENCES dim_image(image_id)
+    FOREIGN KEY (weight_id) REFERENCES dim_weight(weight_id)
+);
+
+-- Création de la table de dimension "brand"
+CREATE TABLE dim_brand (
+    brand_id SERIAL PRIMARY KEY,  -- Clé primaire
+    brand VARCHAR(255) NOT NULL   -- Marque
+);
+
+-- Création de la table de dimension "manufacturer"
+CREATE TABLE dim_manufacturer (
+    manufacturer_id SERIAL PRIMARY KEY,  -- Clé primaire
+    manufacturer VARCHAR(255) NOT NULL,   -- Fabricant
+    manufacturernumber VARCHAR(255)       -- Numéro du fabricant
+);
+
+-- Création de la table de dimension "price"
+CREATE TABLE dim_price (
+    price_id SERIAL PRIMARY KEY,  -- Clé primaire
+    prices_currency VARCHAR(10) NOT NULL,  -- Devise
+    prices_condition VARCHAR(50) NOT NULL,  -- État
+    prices_amountmin DECIMAL(10,2),          -- Prix minimum
+    prices_amountmax DECIMAL(10,2)           -- Prix maximum
+);
+
+-- Création de la table de dimension "color"
+CREATE TABLE dim_color (
+    color_id SERIAL PRIMARY KEY,  -- Clé primaire
+    colors VARCHAR(50) NOT NULL    -- Couleurs
+);
+
+-- Création de la table de dimension "category"
+CREATE TABLE dim_category (
+    category_id SERIAL PRIMARY KEY,  -- Clé primaire
+    categories VARCHAR(255) NOT NULL  -- Catégories
+);
+
+-- Création de la table de dimension "merchant"
+CREATE TABLE dim_merchant (
+    merchant_id SERIAL PRIMARY KEY,  -- Clé primaire
+    merchants_name VARCHAR(255) NOT NULL  -- Nom du marchand
+);
+
+-- Création de la table de dimension "date"
+CREATE TABLE dim_date (
+    date_id SERIAL PRIMARY KEY,  -- Clé primaire
+    dateadded DATE NOT NULL,     -- Date d'ajout
+    dateupdated DATE NOT NULL     -- Date de mise à jour
+);
+
+-- Création de la table de dimension "image"
+CREATE TABLE dim_image (
+    image_id SERIAL PRIMARY KEY,  -- Clé primaire
+    imageurls TEXT NOT NULL        -- URLs des images
+);
+
+
+CREATE TABLE dim_weight (
+    weight_id SERIAL PRIMARY KEY,  -- Clé primaire
+    weight DECIMAL (10,2)        -- URLs des images
+);
 
 
 
