@@ -1,2 +1,88 @@
 CREATE USER bi WITH PASSWORD '123456';
 GRANT ALL PRIVILEGES ON DATABASE bi TO bi;
+GRANT ALL ON SCHEMA public to bi;
+
+\z
+
+CREATE TABLE schuhverkauf (
+                       id varchar(255) PRIMARY KEY,
+                       brand VARCHAR(255),
+                       weight VARCHAR(50),
+                       prices_condition VARCHAR(50),
+                       prices_currency VARCHAR(50),
+                       prices_amountmax DECIMAL(10, 2),
+                       prices_amountmin DECIMAL(10, 2),
+                       prices_merchant VARCHAR(255)
+);
+
+INSERT INTO schuhverkauf (id, brand, weight, prices_condition, prices_currency, prices_amountmax, prices_amountmin, prices_merchant)
+SELECT id, brand, weight, prices_condition, prices_currency, prices_amountmax, prices_amountmin, prices_merchant
+FROM shoes;
+
+ALTER TABLE schuhverkauf
+    DROP CONSTRAINT schuhverkauf_pkey;
+
+SELECT brand, COUNT(*) AS count
+FROM schuhverkauf
+GROUP BY brand
+ORDER BY count DESC
+LIMIT 5;
+
+
+SELECT
+    MAX(
+            CASE
+                WHEN weight LIKE '%lbs' THEN CAST(SUBSTRING(weight FROM '^[0-9.]+') AS DECIMAL) * 453.592
+                WHEN weight LIKE '%g' THEN CAST(SUBSTRING(weight FROM '^[0-9.]+') AS DECIMAL)
+                ELSE NULL
+                END
+    ) AS max_weight_in_grams,
+    MIN(
+            CASE
+                WHEN weight LIKE '%lbs' THEN CAST(SUBSTRING(weight FROM '^[0-9.]+') AS DECIMAL) * 453.592
+                WHEN weight LIKE '%g' THEN CAST(SUBSTRING(weight FROM '^[0-9.]+') AS DECIMAL)
+                ELSE NULL
+                END
+    ) AS min_weight_in_grams
+FROM schuhverkauf;
+
+SELECT DISTINCT prices_condition
+FROM schuhverkauf;
+
+SELECT prices_condition, COUNT(*) AS count
+FROM schuhverkauf
+GROUP BY prices_condition;
+
+SELECT DISTINCT prices_currency
+FROM schuhverkauf;
+
+SELECT prices_currency, COUNT(*) AS count
+FROM schuhverkauf
+GROUP BY prices_currency;
+
+
+SELECT brand, AVG(prices_amountmax) AS avg_price
+FROM schuhverkauf
+WHERE prices_currency = 'USD'
+GROUP BY brand
+ORDER BY avg_price DESC
+LIMIT 1;
+
+SELECT prices_merchant, COUNT(*) AS count
+FROM schuhverkauf
+WHERE prices_merchant IS NOT NULL
+GROUP BY prices_merchant
+ORDER BY count DESC
+LIMIT 5;
+
+
+AUFGABE 4 :
+
+Affeliate-marketing: das Portal erhält ein Provision wenn ein Kauf abgeschlossen ist.
+Sponsoring: some brands pay to be shown more in the display of the Portal
+Advertisment ???
+
+AUFGABE 5:
+
+„Wie unterscheiden sich die Preise zwischen verschiedenen Verkaufsplattformen?“
+„Welche Marken haben die häufigsten Rabattaktionen?“
