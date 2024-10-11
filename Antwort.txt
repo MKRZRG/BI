@@ -50,12 +50,13 @@ f)SELECT prices_currency, COUNT(*) AS count
   GROUP BY prices_currency
   ORDER BY count DESC;
 
-g)SELECT brand, AVG(prices_amountmax) AS average_price
+g)SELECT brand, AVG(CAST(prices_amountmax AS numeric)) AS average_price
   FROM shoes
   WHERE prices_currency = 'USD'
   GROUP BY brand
   ORDER BY average_price DESC
   LIMIT 1;
+
 
 h)SELECT prices_merchant, COUNT(*) AS count
   FROM shoes
@@ -121,19 +122,16 @@ dim_image (image_id, imageurls)
 
 c)
 SELECT
-    b.brand,
-    MAX(p.prices_amountmax) - MIN(p.prices_amountmin) AS price_range
+    brand,
+    MAX(CAST(prices_amountmax AS numeric)) - MIN(CAST(prices_amountmin AS numeric)) AS price_range
 FROM
-    fact_shoes f
-JOIN
-    dim_brand b ON f.brand_id = b.brand_id
-JOIN
-    dim_price p ON f.price_id = p.price_id
+    schuhverkauf
 GROUP BY
-    b.brand
+    brand
 ORDER BY
     price_range DESC
 LIMIT 1;
+
 
 
 Aufgabe 7
