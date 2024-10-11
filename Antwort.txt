@@ -18,6 +18,23 @@ b)SELECT
       MIN(weight) AS min_weight
   FROM shoes;
 
+  SELECT
+      MAX(
+              CASE
+                  WHEN weight LIKE '%g' THEN CAST(REGEXP_REPLACE(weight, '[^0-9.]', '', 'g') AS DECIMAL)  -- Extraire le nombre en grammes
+                  WHEN weight LIKE '%lbs' THEN CAST(REGEXP_REPLACE(weight, '[^0-9.]', '', 'g') AS DECIMAL) * 453.592 -- Convertir livres en grammes
+                  ELSE NULL
+                  END
+      ) AS max_weight_grams,
+      MIN(
+              CASE
+                  WHEN weight LIKE '%g' THEN CAST(REGEXP_REPLACE(weight, '[^0-9.]', '', 'g') AS DECIMAL)
+                  WHEN weight LIKE '%lbs' THEN CAST(REGEXP_REPLACE(weight, '[^0-9.]', '', 'g') AS DECIMAL) * 453.592
+                  ELSE NULL
+                  END
+      ) AS min_weight_grams
+  FROM shoes;
+
 c)SELECT DISTINCT prices_condition
  FROM shoes;
 
@@ -33,16 +50,16 @@ f)SELECT prices_currency, COUNT(*) AS count
   GROUP BY prices_currency
   ORDER BY count DESC;
 
-g)SELECT brand, AVG(price) AS average_price
+g)SELECT brand, AVG(prices_amountmax) AS average_price
   FROM shoes
   WHERE prices_currency = 'USD'
   GROUP BY brand
   ORDER BY average_price DESC
   LIMIT 1;
 
-h)SELECT platform, COUNT(*) AS count
+h)SELECT prices_merchant, COUNT(*) AS count
   FROM shoes
-  GROUP BY platform
+  GROUP BY prices_merchant
   ORDER BY count DESC
   LIMIT 5;
 
@@ -70,6 +87,17 @@ h)SELECT platform, COUNT(*) AS count
       weight                      -- Poids de la chaussure
   FROM shoes;
 
+Aufgabe 4
+1. Affiliate-Marketing (Provisionen)
+
+2. Werbeeinnahmen
+
+3. Abonnements für Händler
+
+Aufgabe 5
+„Welche Schuhmarke oder Händler erzielt im Durchschnitt
+den höchsten Preis pro verkauftem Paar?
+
 
 Aufgabe 6
 b)
@@ -90,6 +118,32 @@ dim_merchant (merchant_id, merchants_name)
 dim_date (date_id, dateadded, dateupdated)
 
 dim_image (image_id, imageurls)
+
+c)
+SELECT
+    b.brand,
+    MAX(p.prices_amountmax) - MIN(p.prices_amountmin) AS price_range
+FROM
+    fact_shoes f
+JOIN
+    dim_brand b ON f.brand_id = b.brand_id
+JOIN
+    dim_price p ON f.price_id = p.price_id
+GROUP BY
+    b.brand
+ORDER BY
+    price_range DESC
+LIMIT 1;
+
+
+Aufgabe 7
+Subjektorientiert: Es ist um zentrale Geschäftsobjekte wie Marken, Hersteller und Händler organisiert.
+
+Integriert: Daten aus verschiedenen Quellen werden standardisiert und zentralisiert in den Dimensionstabellen gespeichert.
+
+Zeitvariant: Es speichert historische Daten mit Zeitstempeln, um Trends über die Zeit zu analysieren.
+
+Nicht-flüchtig: Daten werden einmal gespeichert und nicht überschrieben, neue Informationen werden als neue Datensätze hinzugefügt.
 
 Aufgabe 8
 -- Création de la table des faits
